@@ -44,7 +44,6 @@ typedef struct {
     int winningPlayer; // 0=aucun, 1=joueur1, 2=joueur2, 3=égalité
 
     // Sons
-    Sound fruitEatSound;
     Sound gameOverSound;
     Music backgroundMusic;
     bool gameOverSoundPlayed;
@@ -124,7 +123,7 @@ void InitGame(GameState *game, int speed, int mode) {
     game->lastSelectedGameMode = mode; // Sauvegarde le mode choisi
 
     // Initialisation du Joueur 1
-    game->player1.length = 3;
+    game->player1.length = 2;
     game->player1.dir = RIGHT;
     game->player1.color = GREEN;
     game->player1.isDead = false;
@@ -135,7 +134,7 @@ void InitGame(GameState *game, int speed, int mode) {
 
     // Initialisation du Joueur 2 (seulement si mode 2 joueurs)
     if (game->gameMode == 2) {
-        game->player2.length = 3;
+        game->player2.length = 2;
         game->player2.dir = LEFT;
         game->player2.color = BLUE;
         game->player2.isDead = false;
@@ -208,7 +207,7 @@ void UpdateSnakeLogic(Snake *snake, GameState *game, Snake *otherSnake, int *sco
     if (!snake->isDead && IsCollision(snake->body[0], game->fruit)) {
         if (snake->length < MAX_SNAKE_LENGTH) snake->length++;
         (*score)++;
-        PlaySound(game->fruitEatSound);
+        
         GenerateNewFruitPosition(game);
 
         if (game->speed < 20) game->speed++;
@@ -254,12 +253,10 @@ int main(void) {
 
     GameState game = {0};
     game.backgroundMusic = LoadMusicStream("fondson.mp3");
-    game.fruitEatSound = LoadSound("assets/fruit_eat.wav"); // Chargement du son du fruit
-    game.gameOverSound = LoadSound("assets/game_over.wav"); // Chargement du son de fin de partie
+    game.gameOverSound = LoadSound("crash.mp3"); // Chargement du son de fin de partie
 
     PlayMusicStream(game.backgroundMusic);
     SetMusicVolume(game.backgroundMusic, 0.3f);
-    SetSoundVolume(game.fruitEatSound, 0.7f);
     SetSoundVolume(game.gameOverSound, 0.8f);
 
 
@@ -342,7 +339,7 @@ int main(void) {
 
             // Gestion du redémarrage et retour au menu depuis la pause ou le game over
             if (game.gamePaused || game.gameOver) {
-                if (IsKeyPressed(KEY_R)) {
+                if (IsKeyPressed(KEY_ENTER)) {
                     InitGame(&game, game.lastSelectedSpeed, game.lastSelectedGameMode); // Redémarrer avec les mêmes paramètres
                 }
                 if (IsKeyPressed(KEY_M)) {
@@ -421,15 +418,17 @@ int main(void) {
             DrawText(TextFormat("High Score: %d", game.highScore), 10, 40, 20, YELLOW);
             DrawText(TextFormat("Temps: %.1f sec", game.timeElapsed), SCREEN_WIDTH / 2 - MeasureText(TextFormat("Temps: %.1f sec", game.timeElapsed), 20)/2, 10, 20, ORANGE);
 
-            if (game.gamePaused) {
+            if (game.gamePaused && !game.gameOver) {
                 DrawText("PAUSE", SCREEN_WIDTH / 2 - MeasureText("PAUSE", 40)/2, SCREEN_HEIGHT / 2 - 50, 40, ORANGE);
-                DrawText("Appuyez sur R pour recommencer", SCREEN_WIDTH / 2 - MeasureText("Appuyez sur R pour recommencer", 20)/2, SCREEN_HEIGHT / 2 + 10, 20, WHITE);
+                DrawText("Appuyez sur ENTREE pour recommencer", SCREEN_WIDTH / 2 - MeasureText("Appuyez sur ENTREE pour recommencer", 20)/2, SCREEN_HEIGHT / 2 + 10, 20, WHITE);
                 DrawText("Appuyez sur M pour le menu principal", SCREEN_WIDTH / 2 - MeasureText("Appuyez sur M pour le menu principal", 20)/2, SCREEN_HEIGHT / 2 + 40, 20, WHITE);
             }
 
 
             if (game.gameOver) {
+                
                 DrawText("GAME OVER", SCREEN_WIDTH / 2 - MeasureText("GAME OVER", 40)/2, SCREEN_HEIGHT / 2 - 80, 40, RED);
+                 //StopMusicStream(game.backgroundMusic);              
                 if (game.gameMode == 1) {
                     DrawText("Vous avez perdu !", SCREEN_WIDTH / 2 - MeasureText("Vous avez perdu !", 25)/2, SCREEN_HEIGHT / 2 - 30, 25, WHITE);
                 } else { // Mode 2 joueurs
@@ -441,7 +440,7 @@ int main(void) {
                         DrawText("ÉGALITÉ !", SCREEN_WIDTH / 2 - MeasureText("ÉGALITÉ !", 25)/2, SCREEN_HEIGHT / 2 - 30, 25, WHITE);
                     }
                 }
-                DrawText("Appuyez sur R pour recommencer", SCREEN_WIDTH / 2 - MeasureText("Appuyez sur R pour recommencer", 20)/2, SCREEN_HEIGHT / 2 + 10, 20, WHITE);
+                DrawText("Appuyez sur ENTREE pour recommencer", SCREEN_WIDTH / 2 - MeasureText("Appuyez sur ENTREE pour recommencer", 20)/2, SCREEN_HEIGHT / 2 + 10, 20, WHITE);
                 DrawText("Appuyez sur M pour le menu principal", SCREEN_WIDTH / 2 - MeasureText("Appuyez sur M pour le menu principal", 20)/2, SCREEN_HEIGHT / 2 + 40, 20, WHITE);
 
 
@@ -463,7 +462,6 @@ int main(void) {
     // Libération des ressources
     UnloadTexture(background);
     UnloadMusicStream(game.backgroundMusic);
-    UnloadSound(game.fruitEatSound);
     UnloadSound(game.gameOverSound);
     CloseAudioDevice();
     CloseWindow();
