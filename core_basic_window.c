@@ -342,12 +342,7 @@ int main(void) {
                 if (IsKeyPressed(KEY_ENTER)) {
                     InitGame(&game, game.lastSelectedSpeed, game.lastSelectedGameMode); // Redémarrer avec les mêmes paramètres
                 }
-                if (IsKeyPressed(KEY_M)) {
-                    menuState = 0; // Retour au menu principal
-                    // Réinitialiser les sélections par défaut pour le menu
-                    selectedGameMode = 1;
-                    selectedSpeed = 5;
-                }
+               
             }
 
 
@@ -421,7 +416,7 @@ int main(void) {
             if (game.gamePaused && !game.gameOver) {
                 DrawText("PAUSE", SCREEN_WIDTH / 2 - MeasureText("PAUSE", 40)/2, SCREEN_HEIGHT / 2 - 50, 40, ORANGE);
                 DrawText("Appuyez sur ENTREE pour recommencer", SCREEN_WIDTH / 2 - MeasureText("Appuyez sur ENTREE pour recommencer", 20)/2, SCREEN_HEIGHT / 2 + 10, 20, WHITE);
-                DrawText("Appuyez sur M pour le menu principal", SCREEN_WIDTH / 2 - MeasureText("Appuyez sur M pour le menu principal", 20)/2, SCREEN_HEIGHT / 2 + 40, 20, WHITE);
+               
             }
 
 
@@ -441,7 +436,7 @@ int main(void) {
                     }
                 }
                 DrawText("Appuyez sur ENTREE pour recommencer", SCREEN_WIDTH / 2 - MeasureText("Appuyez sur ENTREE pour recommencer", 20)/2, SCREEN_HEIGHT / 2 + 10, 20, WHITE);
-                DrawText("Appuyez sur M pour le menu principal", SCREEN_WIDTH / 2 - MeasureText("Appuyez sur M pour le menu principal", 20)/2, SCREEN_HEIGHT / 2 + 40, 20, WHITE);
+                
 
 
                 int currentMaxScore = game.score1; // En mode 1 joueur, c'est le score du J1
