@@ -249,11 +249,11 @@ int main(void) {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Snake Game - Raylib");
     InitAudioDevice();
 
-    Texture2D background = LoadTexture("serpent.jpg");
+    Texture2D background = LoadTexture("./serpent.jpg");
 
     GameState game = {0};
-    game.backgroundMusic = LoadMusicStream("fondson.mp3");
-    game.gameOverSound = LoadSound("crash.mp3"); // Chargement du son de fin de partie
+    game.backgroundMusic = LoadMusicStream("./fondson.mp3");
+    game.gameOverSound = LoadSound("./crash.mp3"); // Chargement du son de fin de partie
 
     PlayMusicStream(game.backgroundMusic);
     SetMusicVolume(game.backgroundMusic, 0.3f);
